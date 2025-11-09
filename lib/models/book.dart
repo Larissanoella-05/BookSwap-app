@@ -1,17 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+/// Model class representing a book listing in the BookSwap app
+/// Contains all information needed for book display and swap operations
 class Book {
-  final String id;
-  final String title;
-  final String author;
-  final String condition;
-  final String swapFor;
-  final String ownerId;
-  final String ownerEmail;
-  final DateTime createdAt;
-  final String status;
-  final String? imageUrl;
+  final String id;          // Unique Firestore document ID
+  final String title;       // Book title
+  final String author;      // Book author
+  final String condition;   // Book condition (New, Like New, Good, Used)
+  final String swapFor;     // What the owner wants in exchange
+  final String ownerId;     // Firebase Auth UID of book owner
+  final String ownerEmail;  // Email of book owner
+  final DateTime createdAt; // When the book was posted
+  final String status;      // Book status (available, pending, swapped)
+  final String? imageUrl;   // Base64 encoded book cover image (optional)
 
+  /// Constructor for creating a Book instance
+  /// Most fields are required, status defaults to 'available', imageUrl is optional
   Book({
     required this.id,
     required this.title,
@@ -21,11 +25,12 @@ class Book {
     required this.ownerId,
     required this.ownerEmail,
     required this.createdAt,
-    this.status = 'available',
-    this.imageUrl,
+    this.status = 'available',  // Default status for new books
+    this.imageUrl,              // Optional book cover image
   });
 
-  // Converting book to map for saving to Firestore
+  /// Converts Book instance to Map for Firestore storage
+  /// Excludes 'id' field as it's handled by Firestore document ID
   Map<String, dynamic> toMap() {
     return {
       'title': title,
@@ -34,31 +39,35 @@ class Book {
       'swapFor': swapFor,
       'ownerId': ownerId,
       'ownerEmail': ownerEmail,
+      // Convert DateTime to Firestore Timestamp
       'createdAt': Timestamp.fromDate(createdAt),
       'status': status,
       'imageUrl': imageUrl,
     };
   }
 
-  // Creating book from Firestore document
+  /// Factory constructor to create Book from Firestore document
+  /// Handles type conversion and provides default values for missing fields
   factory Book.fromFirestore(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
     return Book(
-      id: doc.id,
+      id: doc.id,  // Use Firestore document ID
       title: data['title'] ?? '',
       author: data['author'] ?? '',
       condition: data['condition'] ?? '',
       swapFor: data['swapFor'] ?? '',
       ownerId: data['ownerId'] ?? '',
       ownerEmail: data['ownerEmail'] ?? '',
+      // Convert Firestore Timestamp to DateTime
       createdAt: (data['createdAt'] as Timestamp).toDate(),
       status: data['status'] ?? 'available',
-      imageUrl: data['imageUrl'],
+      imageUrl: data['imageUrl'],  // Can be null
     );
   }
 
-  // Creating copy of book with updated fields
+  /// Creates a copy of this Book with optionally updated fields
+  /// Useful for updating book information while preserving other fields
   Book copyWith({
     String? id,
     String? title,
@@ -74,9 +83,9 @@ class Book {
       author: author ?? this.author,
       condition: condition ?? this.condition,
       swapFor: swapFor ?? this.swapFor,
-      ownerId: ownerId,
-      ownerEmail: ownerEmail,
-      createdAt: createdAt,
+      ownerId: ownerId,        // These fields don't change
+      ownerEmail: ownerEmail,  // These fields don't change
+      createdAt: createdAt,    // These fields don't change
       status: status ?? this.status,
       imageUrl: imageUrl ?? this.imageUrl,
     );
