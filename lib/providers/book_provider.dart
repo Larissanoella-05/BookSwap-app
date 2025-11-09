@@ -1,181 +1,132 @@
-import 'dart:async';
-import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import '../models/book.dart';
+import '../services/firestore_service.dart';
 
-class BookProvider extends ChangeNotifier {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+class BookProvider with ChangeNotifier {
+  final FirestoreService _firestoreService = FirestoreService();
 
   List<Book> _allBooks = [];
   List<Book> _myBooks = [];
   bool _isLoading = false;
-  StreamSubscription? _allBooksSubscription;
-  StreamSubscription? _myBooksSubscription;
+  String? _error;
 
   List<Book> get allBooks => _allBooks;
   List<Book> get myBooks => _myBooks;
   bool get isLoading => _isLoading;
+  String? get error => _error;
 
-  BookProvider() {
-    _listenToBooks();
-    _auth.authStateChanges().listen((user) {
-      if (user != null) {
-        _listenToMyBooks();
-      } else {
-        _myBooks = [];
-        _myBooksSubscription?.cancel();
-        notifyListeners();
-      }
-    });
-  }
+  Future<void> fetchAllBooks() async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
 
-  void _listenToBooks() {
-    _allBooksSubscription?.cancel();
-    _allBooksSubscription = _firestore.collection('books').orderBy('createdAt', descending: true).snapshots().listen((snapshot) {
-      _allBooks = snapshot.docs.map((doc) => Book.fromFirestore(doc)).toList();
-      notifyListeners();
-    });
-  }
-
-  void _listenToMyBooks() {
-    _myBooksSubscription?.cancel();
-    if (_auth.currentUser != null) {
-      _myBooksSubscription = _firestore
-          .collection('books')
-          .where('ownerId', isEqualTo: _auth.currentUser!.uid)
-          .orderBy('createdAt', descending: true)
-          .snapshots()
-          .listen((snapshot) {
-        _myBooks = snapshot.docs.map((doc) => Book.fromFirestore(doc)).toList();
-        notifyListeners();
-      });
-    }
-  }
-
-  Future<String?> uploadImage(File imageFile) async {
     try {
-      final user = _auth.currentUser;
-      if (user == null) return null;
-
-      final ref = FirebaseStorage.instance
-          .ref()
-          .child('book_images')
-          .child('${user.uid}_${DateTime.now().millisecondsSinceEpoch}.jpg');
-      
-      await ref.putFile(imageFile);
-      return await ref.getDownloadURL();
+      final books = await _firestoreService.getAllBooks().first;
+      _allBooks = books;
+      _error = null;
     } catch (e) {
-      debugPrint('Error uploading image: $e');
-      return null;
+      _error = 'Failed to load books: $e';
+      _allBooks = [];
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
   }
 
-  Future<String?> addBook(String title, String author, BookCondition condition, File? imageFile) async {
+  Future<void> fetchMyBooks() async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
     try {
-      _isLoading = true;
+      final books = await _firestoreService.getMyBooks().first;
+      _myBooks = books;
+      _error = null;
+    } catch (e) {
+      _error = 'Failed to load your books: $e';
+      _myBooks = [];
+    } finally {
+      _isLoading = false;
       notifyListeners();
+    }
+  }
 
-      User? user = _auth.currentUser;
-      if (user == null) return 'User not authenticated';
+  // Listening to books in real time
+  void listenToAllBooks() {
+    _firestoreService.getAllBooks().listen(
+      (books) {
+        _allBooks = books;
+        _error = null;
+        notifyListeners();
+      },
+      onError: (error) {
+        _error = 'Failed to load books: $error';
+        notifyListeners();
+      },
+    );
+  }
 
-      String? imageUrl;
-      if (imageFile != null) {
-        imageUrl = await uploadImage(imageFile);
-      }
+  void listenToMyBooks() {
+    _firestoreService.getMyBooks().listen(
+      (books) {
+        _myBooks = books;
+        _error = null;
+        notifyListeners();
+      },
+      onError: (error) {
+        _error = 'Failed to load your books: $error';
+        notifyListeners();
+      },
+    );
+  }
 
-      Book newBook = Book(
-        id: '',
+  Future<void> addBook({
+    required String title,
+    required String author,
+    required String condition,
+    required String swapFor,
+    required String imageUrl,
+  }) async {
+    try {
+      await _firestoreService.addBook(
         title: title,
         author: author,
         condition: condition,
+        swapFor: swapFor,
         imageUrl: imageUrl,
-        ownerId: user.uid,
-        ownerEmail: user.email ?? '',
-        createdAt: DateTime.now(),
       );
-
-      await _firestore.collection('books').add(newBook.toFirestore());
-      return null;
     } catch (e) {
-      return e.toString();
-    } finally {
-      _isLoading = false;
+      _error = 'Failed to add book: $e';
       notifyListeners();
+      rethrow;
     }
   }
 
-  Future<String?> updateBook(String bookId, String title, String author, BookCondition condition, String? imageUrl) async {
+  Future<void> updateBook({
+    required String bookId,
+    required Map<String, dynamic> updates,
+  }) async {
     try {
-      _isLoading = true;
-      notifyListeners();
-
-      await _firestore.collection('books').doc(bookId).update({
-        'title': title,
-        'author': author,
-        'condition': condition.index,
-        'imageUrl': imageUrl,
-      });
-      return null;
+      await _firestoreService.updateBook(bookId: bookId, updates: updates);
     } catch (e) {
-      return e.toString();
-    } finally {
-      _isLoading = false;
+      _error = 'Failed to update book: $e';
       notifyListeners();
+      rethrow;
     }
   }
 
-  Future<String?> deleteBook(String bookId) async {
+  Future<void> deleteBook(String bookId) async {
     try {
-      _isLoading = true;
-      notifyListeners();
-
-      await _firestore.collection('books').doc(bookId).delete();
-      return null;
+      await _firestoreService.deleteBook(bookId);
     } catch (e) {
-      return e.toString();
-    } finally {
-      _isLoading = false;
+      _error = 'Failed to delete book: $e';
       notifyListeners();
+      rethrow;
     }
   }
 
-  Future<String?> requestSwap(String bookId) async {
-    try {
-      _isLoading = true;
-      notifyListeners();
-
-      User? user = _auth.currentUser;
-      if (user == null) return 'User not authenticated';
-
-      await _firestore.collection('books').doc(bookId).update({
-        'status': SwapStatus.pending.index,
-        'swapRequesterId': user.uid,
-      });
-      return null;
-    } catch (e) {
-      return e.toString();
-    } finally {
-      _isLoading = false;
-      notifyListeners();
-    }
-  }
-
-  List<Book> get availableBooks => _allBooks.where((book) => 
-      book.status == SwapStatus.available && 
-      book.ownerId != _auth.currentUser?.uid).toList();
-
-  List<Book> get pendingOffers => _allBooks.where((book) => 
-      book.swapRequesterId == _auth.currentUser?.uid && 
-      book.status == SwapStatus.pending).toList();
-
-  @override
-  void dispose() {
-    _allBooksSubscription?.cancel();
-    _myBooksSubscription?.cancel();
-    super.dispose();
+  void clearError() {
+    _error = null;
+    notifyListeners();
   }
 }
