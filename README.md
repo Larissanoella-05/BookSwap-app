@@ -4,34 +4,40 @@ A Flutter marketplace app where students can list textbooks they wish to exchang
 
 ## Features
 
-### ✅ Authentication
+### Authentication
+
 - Sign up/Sign in with Firebase Authentication (email/password)
 - Email verification system
 - User profile management
 
-### ✅ Book Listings (CRUD)
+### Book Listings (CRUD)
+
 - **Create**: Post books with title, author, condition (New, Like New, Good, Used)
 - **Read**: Browse all available listings in a shared feed
 - **Update**: Edit your own book listings
 - **Delete**: Remove your own listings
 
-### ✅ Swap Functionality
+### Swap Functionality
+
 - Initiate swap offers by tapping "Swap" button
 - Real-time status updates (Available → Pending → Swapped)
 - Track your offers in "My Offers" section
 
-### ✅ State Management
+### State Management
+
 - Provider pattern for reactive state management
 - Real-time Firestore sync for instant updates
 
-### ✅ Navigation
+### Navigation
+
 - Bottom navigation with 4 screens:
   - **Browse Listings**: View all available books
   - **My Listings**: Manage your books and offers
   - **My Offers**: Track sent and received swap offers
   - **Settings**: Profile and preferences
 
-### ✅ Chat System (Bonus)
+### Chat System (Bonus)
+
 - Real-time messaging between users after swap acceptance
 - Unread message notifications
 - Message timestamps
@@ -39,22 +45,26 @@ A Flutter marketplace app where students can list textbooks they wish to exchang
 ## Setup Instructions
 
 ### Prerequisites
+
 - Flutter SDK (3.9.0 or higher)
 - Android Studio / VS Code with Flutter extensions
 - Firebase project setup
 
 ### 1. Clone Repository
+
 ```bash
 git clone <your-repository-url>
 cd bookswap_app
 ```
 
 ### 2. Install Dependencies
+
 ```bash
 flutter pub get
 ```
 
 ### 3. Firebase Setup
+
 The app is already configured to connect to the Firebase project `bookswap-app-e29b4`. However, if you want to use your own Firebase project:
 
 1. Create a new Firebase project at [Firebase Console](https://console.firebase.google.com/)
@@ -67,21 +77,26 @@ The app is already configured to connect to the Firebase project `bookswap-app-e
    ```
 
 ### 4. Required Firestore Indexes
+
 Create these indexes in Firebase Console → Firestore → Indexes:
 
 **For swap_offers collection:**
+
 - Fields: `senderId` (Ascending), `createdAt` (Descending)
 - Fields: `recipientId` (Ascending), `createdAt` (Descending)
 - Fields: `recipientId` (Ascending), `status` (Ascending)
 
 **For chat_messages collection:**
+
 - Fields: `swapOfferId` (Ascending), `timestamp` (Ascending)
 - Fields: `swapOfferId` (Ascending), `senderId` (Ascending), `isRead` (Ascending)
 
 **For books collection:**
+
 - Fields: `ownerId` (Ascending), `createdAt` (Descending)
 
 ### 5. Run the App
+
 ```bash
 flutter run
 ```
@@ -89,6 +104,7 @@ flutter run
 **Important**: Run on a mobile device or emulator, not in a web browser.
 
 ## Project Structure
+
 ```
 lib/
 ├── main.dart                 # App entry point
@@ -122,6 +138,7 @@ lib/
 ```
 
 ## Technologies Used
+
 - **Frontend**: Flutter (Dart)
 - **Backend**: Firebase (Authentication, Firestore, Storage)
 - **State Management**: Provider
@@ -130,6 +147,7 @@ lib/
 - **Local Storage**: SharedPreferences
 
 ## Key Dependencies
+
 ```yaml
 dependencies:
   firebase_core: ^3.6.0
@@ -144,17 +162,21 @@ dependencies:
 ```
 
 ## Testing
+
 Run the analyzer to check for issues:
+
 ```bash
 flutter analyze
 ```
 
 Run tests:
+
 ```bash
 flutter test
 ```
 
 ## Demo Features
+
 1. **User Authentication**: Sign up, login, email verification
 2. **Book Management**: Create, read, update, delete book listings
 3. **Swap System**: Initiate offers, accept/reject, real-time status updates
@@ -162,16 +184,19 @@ flutter test
 5. **Settings**: Toggle notifications, view profile
 
 ## Firebase Collections
+
 - `users`: User authentication data
 - `books`: Book listings with metadata
 - `swap_offers`: Swap offer details and status
 - `chat_messages`: Real-time chat messages
 
 ## Troubleshooting
+
 - **Index errors**: Create required Firestore indexes as listed above
 - **Package errors**: Run `flutter pub get` to install dependencies
 - **Firebase connection**: Ensure `firebase_options.dart` has correct project configuration
 - **Email verification**: Check spam folder or use resend feature
 
 ## License
+
 This project is for educational purposes as part of a mobile app development course.

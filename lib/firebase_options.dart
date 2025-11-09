@@ -41,7 +41,7 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'YOUR_ANDROID_API_KEY_HERE',
+    apiKey: 'AIzaSyAEJsnRjOYNV4s0PIZlaiprzUPcgKMRGZ8',
     appId: '1:162993444111:android:0cf43b8bcf94ecb3c1da7a',
     messagingSenderId: '162993444111',
     projectId: 'bookswap-app-e29b4',
@@ -49,7 +49,7 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'YOUR_IOS_API_KEY_HERE',
+    apiKey: 'AIzaSyCrCaDaQJ0dKNEznmV_k-PakdGvbOlnSdE',
     appId: '1:162993444111:ios:8e3542085b5745bfc1da7a',
     messagingSenderId: '162993444111',
     projectId: 'bookswap-app-e29b4',
@@ -58,7 +58,7 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'YOUR_WEB_API_KEY_HERE',
+    apiKey: 'AIzaSyCaMmtVyOofMOdI_pla9SYETLTzZSX8ma4',
     appId: '1:162993444111:web:0e09933150ad80bec1da7a',
     messagingSenderId: '162993444111',
     projectId: 'bookswap-app-e29b4',
@@ -67,7 +67,7 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'YOUR_MACOS_API_KEY_HERE',
+    apiKey: 'AIzaSyCrCaDaQJ0dKNEznmV_k-PakdGvbOlnSdE',
     appId: '1:162993444111:ios:8e3542085b5745bfc1da7a',
     messagingSenderId: '162993444111',
     projectId: 'bookswap-app-e29b4',
@@ -76,7 +76,7 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'YOUR_WINDOWS_API_KEY_HERE',
+    apiKey: 'AIzaSyCaMmtVyOofMOdI_pla9SYETLTzZSX8ma4',
     appId: '1:162993444111:web:2db668bf2d00aac0c1da7a',
     messagingSenderId: '162993444111',
     projectId: 'bookswap-app-e29b4',
