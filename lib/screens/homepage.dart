@@ -324,13 +324,13 @@ class _BookCard extends StatelessWidget {
   Color _getConditionColor(String condition) {
     switch (condition.toLowerCase()) {
       case 'new':
-        return Colors.green;
+        return const Color.fromARGB(255, 65, 130, 174);
       case 'like new':
-        return Colors.blue;
+        return const Color.fromARGB(255, 104, 35, 35);
       case 'good':
-        return Colors.orange;
+        return const Color.fromARGB(255, 109, 87, 52);
       case 'fair':
-        return Colors.deepOrange;
+        return const Color.fromARGB(255, 18, 38, 26);
       default:
         return Colors.grey;
     }
@@ -378,11 +378,17 @@ class _MyListingsScreenState extends State<MyListingsScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.error_outline, size: 60, color: Colors.red),
+                  const Icon(
+                    Icons.error_outline,
+                    size: 60,
+                    color: Color.fromARGB(255, 78, 47, 45),
+                  ),
                   const SizedBox(height: 16),
                   Text(
                     'Error: ${bookProvider.error}',
-                    style: const TextStyle(color: Colors.red),
+                    style: const TextStyle(
+                      color: Color.fromARGB(255, 67, 33, 30),
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
@@ -441,8 +447,8 @@ class _MyListingsScreenState extends State<MyListingsScreen> {
             MaterialPageRoute(builder: (context) => const PostBookScreen()),
           );
         },
-        backgroundColor: const Color(0xFFF5C344),
-        child: const Icon(Icons.add, color: Color(0xFF2C2855)),
+        backgroundColor: const Color.fromARGB(255, 189, 153, 63),
+        child: const Icon(Icons.add, color: Color.fromARGB(255, 31, 28, 66)),
       ),
     );
   }
@@ -535,7 +541,7 @@ class _MyBookCard extends StatelessWidget {
                           ),
                           decoration: BoxDecoration(
                             color: book.status == 'available'
-                                ? Colors.green
+                                ? const Color.fromARGB(255, 48, 103, 50)
                                 : Colors.grey,
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -583,9 +589,18 @@ class _MyBookCard extends StatelessWidget {
                     value: 'delete',
                     child: Row(
                       children: [
-                        Icon(Icons.delete, size: 20, color: Colors.red),
+                        Icon(
+                          Icons.delete,
+                          size: 20,
+                          color: Color.fromARGB(255, 88, 29, 24),
+                        ),
                         SizedBox(width: 8),
-                        Text('Delete', style: TextStyle(color: Colors.red)),
+                        Text(
+                          'Delete',
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 101, 38, 34),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -634,7 +649,7 @@ class _MyBookCard extends StatelessWidget {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('Book deleted successfully'),
-                      backgroundColor: Colors.green,
+                      backgroundColor: Color.fromARGB(255, 38, 88, 40),
                     ),
                   );
                 }
@@ -644,13 +659,16 @@ class _MyBookCard extends StatelessWidget {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('Failed to delete: $e'),
-                      backgroundColor: Colors.red,
+                      backgroundColor: const Color.fromARGB(255, 72, 29, 26),
                     ),
                   );
                 }
               }
             },
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            child: const Text(
+              'Delete',
+              style: TextStyle(color: Color.fromARGB(255, 121, 45, 40)),
+            ),
           ),
         ],
       ),
@@ -661,13 +679,13 @@ class _MyBookCard extends StatelessWidget {
   Color _getConditionColor(String condition) {
     switch (condition.toLowerCase()) {
       case 'new':
-        return Colors.green;
+        return const Color.fromARGB(255, 65, 130, 174);
       case 'like new':
-        return Colors.blue;
+        return const Color.fromARGB(255, 104, 35, 35);
       case 'good':
-        return Colors.orange;
+        return const Color.fromARGB(255, 109, 87, 52);
       case 'fair':
-        return Colors.deepOrange;
+        return const Color.fromARGB(255, 18, 38, 26);
       default:
         return Colors.grey;
     }
@@ -732,7 +750,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _saveNotificationPreference(bool value) async {
     // Capture context reference before async operations
     final scaffoldMessenger = ScaffoldMessenger.of(context);
-    
+
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('notifications_enabled', value);
     setState(() {
@@ -748,7 +766,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ? '🔔 Push notifications enabled'
                 : '🔕 Push notifications disabled',
           ),
-          backgroundColor: value ? Colors.green : Colors.grey,
+          backgroundColor: value
+              ? const Color.fromARGB(255, 41, 104, 44)
+              : Colors.grey,
           duration: const Duration(seconds: 2),
         ),
       );
@@ -759,7 +779,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _saveEmailUpdatesPreference(bool value) async {
     // Capture context reference before async operations
     final scaffoldMessenger = ScaffoldMessenger.of(context);
-    
+
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('email_updates_enabled', value);
     setState(() {
@@ -771,9 +791,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
       scaffoldMessenger.showSnackBar(
         SnackBar(
           content: Text(
-            value ? '📧 Email updates enabled' : '📧 Email updates disabled',
+            value ? 'Email updates enabled' : 'Email updates disabled',
           ),
-          backgroundColor: value ? Colors.green : Colors.grey,
+          backgroundColor: value
+              ? const Color.fromARGB(255, 33, 85, 35)
+              : Colors.grey,
           duration: const Duration(seconds: 2),
         ),
       );
@@ -787,7 +809,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
-        backgroundColor: const Color(0xFF2C2855),
+        backgroundColor: const Color.fromARGB(255, 35, 31, 72),
         foregroundColor: Colors.white,
       ),
       body: ListView(
@@ -806,7 +828,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               children: [
                 CircleAvatar(
                   radius: 50,
-                  backgroundColor: const Color(0xFFF5C344),
+                  backgroundColor: const Color.fromARGB(255, 160, 126, 39),
                   child: Text(
                     user?.email?.substring(0, 1).toUpperCase() ?? 'U',
                     style: const TextStyle(
@@ -853,7 +875,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: const Text('Push Notifications'),
             subtitle: const Text('Receive notifications about swap offers'),
             value: _notificationsEnabled,
-            activeTrackColor: const Color(0xFFF5C344),
+            activeTrackColor: const Color.fromARGB(255, 144, 113, 35),
             onChanged: _isLoading ? null : _saveNotificationPreference,
           ),
 
@@ -861,7 +883,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: const Text('Email Updates'),
             subtitle: const Text('Receive email about swap offers'),
             value: _emailUpdatesEnabled,
-            activeTrackColor: const Color(0xFFF5C344),
+            activeTrackColor: const Color.fromARGB(255, 144, 113, 35),
             onChanged: _isLoading ? null : _saveEmailUpdatesPreference,
           ),
 
@@ -878,12 +900,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 color: Colors.grey,
               ),
             ),
-          ),
-
-          ListTile(
-            leading: const Icon(Icons.info_outline),
-            title: const Text('App Version'),
-            subtitle: const Text('1.0.0'),
           ),
 
           ListTile(
@@ -942,7 +958,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               icon: const Icon(Icons.logout),
               label: const Text('Sign Out'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
+                backgroundColor: const Color.fromARGB(255, 121, 62, 58),
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 minimumSize: const Size(double.infinity, 48),
