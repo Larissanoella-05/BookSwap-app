@@ -2,6 +2,17 @@
 
 A Flutter marketplace app where students can list textbooks they wish to exchange and initiate swap offers with other users. Built with Firebase for authentication, data storage, and real-time updates.
 
+## Screenshots
+
+- ![alt text](image-6.png)
+- ![alt text](image-7.png)
+- ![alt text](image-3.png)
+- ![alt text](image-4.png)
+- ![alt text](image-5.png)
+- ![alt text](image-1.png)
+- ![alt text](image-2.png)
+-
+
 ## Features
 
 ### Authentication
